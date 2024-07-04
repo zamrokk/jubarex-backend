@@ -18,8 +18,8 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
-  findOne(id: number) {
-    return this.userModel.findOne({ _id: id }).exec();
+  findOne(email: string) {
+    return this.userModel.findOne({ email }).exec();
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -30,9 +30,7 @@ export class UserService {
   }
 
   async remove(id: number) {
-    const deletedUser = await this.userModel
-      .findByIdAndDelete( id )
-      .exec();
+    const deletedUser = await this.userModel.findByIdAndDelete(id).exec();
     return deletedUser;
   }
 }

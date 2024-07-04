@@ -71,3 +71,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+curl -X POST http://localhost:3000/auth/login -d '{"email": "zamrokk@gmail.com", "password": "test"}' -H "Content-Type: application/json"
+
+curl http://localhost:3000/auth/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6YW1yb2trQGdtYWlsLmNvbSIsImZpcnN0bmFtZSI6IkJlbmphbWluIiwibGFzdG5hbWUiOiJGdWVudGVzIiwiaWF0IjoxNzIwMTA3MjEzLCJleHAiOjE3MjAxMDc4MTN9.e6NDp94L_8swqF74vxtVxdwOnn2eEvmo4IPqxlzoAAc"
