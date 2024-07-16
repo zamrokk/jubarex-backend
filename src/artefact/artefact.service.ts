@@ -39,17 +39,17 @@ export class ArtefactService {
   }
 
   async upload(file: Express.Multer.File): Promise<string> {
-    const id = uuid()+ '.png';
+    const id = uuid() + '.' + file.mimetype.split('/')[1];
 
-    console.log('uuid', id, 'file', file);
+    console.log('uuid', id, 'file', file, 'mime', file.mimetype);
 
     const input: PutObjectRequest = {
       ACL: ObjectCannedACL.public_read,
       Body: Readable.from(file.buffer),
-      ContentType: 'image/png',
+      ContentType: file.mimetype,
       ContentLength: file.buffer.length,
       Bucket: process.env.S3_BUCKET, // required
-      Key: id , // required
+      Key: id, // required
     };
     const command = new PutObjectCommand(input);
     try {
