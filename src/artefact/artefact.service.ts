@@ -39,7 +39,7 @@ export class ArtefactService {
   }
 
   async upload(file: Express.Multer.File): Promise<string> {
-    const id = uuid() + '.' + file.mimetype.split('/')[1];
+    const id = uuid() + '.' + file.filename.split('.').pop();
 
     console.log('uuid', id, 'file', file, 'mime', file.mimetype);
 
