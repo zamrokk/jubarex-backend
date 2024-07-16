@@ -1,6 +1,9 @@
 import {
+  GetObjectCommand,
+  GetObjectCommandInput,
   ObjectCannedACL,
   PutObjectCommand,
+  PutObjectRequest,
   S3Client,
   S3ClientConfig,
 } from '@aws-sdk/client-s3';
@@ -12,6 +15,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TagService } from 'src/tag/tag.service';
 import { UserService } from 'src/user/user.service';
+import { Readable } from 'stream';
 import { v4 as uuid } from 'uuid';
 import { Artefact } from './entities/artefact.entity';
 
@@ -35,16 +39,17 @@ export class ArtefactService {
   }
 
   async upload(file: Express.Multer.File): Promise<string> {
-    const id = uuid();
+    const id = uuid()+ '.png';
 
     console.log('uuid', id, 'file', file);
 
-    const input = {
+    const input: PutObjectRequest = {
       ACL: ObjectCannedACL.public_read,
-      Body: file.buffer.toString('utf8'),
-
+      Body: Readable.from(file.buffer),
+      ContentType: 'image/png',
+      ContentLength: file.buffer.length,
       Bucket: process.env.S3_BUCKET, // required
-      Key: id, // required
+      Key: id , // required
     };
     const command = new PutObjectCommand(input);
     try {
@@ -55,6 +60,24 @@ export class ArtefactService {
       return id;
     } catch (error) {
       console.error('Cannot upload to S3', error);
+      throw error;
+    }
+  }
+
+  async getFile(uuid: string): Promise<Uint8Array> {
+    const input: GetObjectCommandInput = {
+      Bucket: process.env.S3_BUCKET, // required
+      Key: uuid, // required
+    };
+    const command = new GetObjectCommand(input);
+    try {
+      const response = await this.client.send(command);
+
+      console.log('artefact downloaded from S3', response);
+
+      return await response.Body.transformToByteArray();
+    } catch (error) {
+      console.error('Cannot download from S3', error);
       throw error;
     }
   }
